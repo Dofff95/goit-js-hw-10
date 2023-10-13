@@ -4,20 +4,10 @@ import { fetchBreeds, fetchCatByBreed } from "./cat-api";
 axios.defaults.headers.common["x-api-key"] = "live_Kvq9abCz1PZoBOEyqUcCrq8wh3dTmJ0qSF0bx630AC3wxsIW3k8ePGDuWcnKRBtD";
 
 const breedSelect = document.querySelector(".breed-select");
+const catInfoDiv = document.querySelector(".cat-info");
+const loader = document.querySelector(".loader");
+const errorElement = document.querySelector(".error");
 
-breedSelect.addEventListener("change", () => {
-  const selectedBreedId = breedSelect.value;
-  
-  if (selectedBreedId) {
-    fetchCatByBreed(selectedBreedId)
-    .then((catInfo) => {
-        displayCatInfo(catInfo);
-    })
-      .catch((error) => {
-        console.error("Помилка під час отримання інформації про кота", error);
-      });
-    }
-});
 // ===========================================================================
 fetchBreeds()
 .then((breeds) => {
@@ -47,9 +37,7 @@ function displayCatInfo(catData) {
   img.style.width = "400px"
 }
 
-const catInfoDiv = document.querySelector(".cat-info");
-const loader = document.querySelector(".loader");
-const errorElement = document.querySelector(".error");
+// ==============================================================
 
 breedSelect.addEventListener("change", () => {
   const selectedBreedId = breedSelect.value;
@@ -62,3 +50,19 @@ breedSelect.addEventListener("change", () => {
   }
 });
 
+breedSelect.addEventListener("change", () => {
+  const selectedBreedId = breedSelect.value;
+  
+  if (selectedBreedId) {
+    fetchCatByBreed(selectedBreedId)
+    .then((catInfo) => {
+        displayCatInfo(catInfo);
+        errorElement.style.display = "none";
+    })
+      .catch((error) => {
+        catInfoDiv.innerHTML = "";
+        errorElement.style.display = "block";
+        console.error("Помилка під час отримання інформації про кота", error);
+      });
+    }
+});
